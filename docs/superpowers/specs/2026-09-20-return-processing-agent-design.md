@@ -27,6 +27,13 @@ The initial policy uses a configurable return window, excludes non-returnable
 items, and only permits refund or exchange when the item and order are found.
 Fixtures are intentionally in memory and deterministic.
 
+Jev is used only for the semantic part of the workflow: an optional
+`ReasonClassifier` adapter maps free-form customer language to a small,
+typed set of return reasons. Eligibility, policy enforcement, and side effects
+remain deterministic code. The default fixture workflow can run without an API
+key; callers opt into the Jev adapter when they need free-form reason
+normalization.
+
 ## Architecture
 
 The package is split into four focused layers:

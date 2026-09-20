@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jev"
+version = "0.1.0"
+description = "Typed return-processing workflow powered by deterministic rules and optional Jev judgments"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+jev = ["typesafe-sdk"]
+test = ["pytest>=8"]
+
+[project.scripts]
+jev-return = "jev.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
