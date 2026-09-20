@@ -18,6 +18,7 @@ The same workflow is available through the Makefile:
 make setup
 make check
 make run
+make examples
 ```
 
 `uv` is the primary environment and package manager. If `uv` is unavailable,
@@ -31,3 +32,18 @@ Each semantic evaluation uses a TypeSafe Choice for reason category, a Noul
 for policy compliance, and a Score for customer sentiment. Hard order and
 return-window rules remain deterministic.
 For offline tests, explicitly inject `KeywordReasonClassifier()`.
+
+## Logic examples
+
+Run the complete offline example set with `make examples`. It demonstrates:
+
+- **Choice:** classifies a free-form reason such as “The shirt arrived
+  damaged” as `damaged`.
+- **Noul:** returns a policy-compliance probability for the request.
+- **Score:** returns customer sentiment intensity on a three-level scale.
+- **Deterministic rules:** rejects an expired return even when semantic
+  judgments are available.
+
+The examples use `KeywordReasonClassifier()` so they do not require
+`TYPESAFE_API_KEY`. Production processing uses `JevReasonClassifier()` by
+default and obtains the same three typed judgments from the TypeSafe SDK.
