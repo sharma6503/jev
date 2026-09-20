@@ -5,12 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jev"
 version = "0.1.0"
-description = "Typed return-processing workflow powered by deterministic rules and optional Jev judgments"
+description = "Typed return-processing workflow powered by deterministic rules and Jev judgments"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["typesafe-sdk"]
 
 [project.optional-dependencies]
-jev = ["typesafe-sdk"]
 test = ["pytest>=8"]
 
 [project.scripts]

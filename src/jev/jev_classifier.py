@@ -10,7 +10,7 @@ class JevReasonClassifier:
                 from typesafe_sdk import TypeSafeClient
             except ImportError as error:
                 raise RuntimeError(
-                    "Install the optional Jev dependency with `pip install .[jev]`."
+                    "Install JEV dependencies with `pip install -e .`."
                 ) from error
             client = TypeSafeClient()
         self._client = client
@@ -19,8 +19,8 @@ class JevReasonClassifier:
         from typesafe_sdk import Choice
 
         response = self._client.system_one(
-            state={"return_reason": reason},
-            questions={
+            {"return_reason": reason},
+            {
                 "reason": Choice(
                     instructions="Classify the customer's return reason.",
                     criteria={

@@ -1,7 +1,8 @@
 from collections.abc import Iterable
 
 from .models import Order, ReturnDecision, ReturnPolicy, ReturnRequest
-from .policy import KeywordReasonClassifier, ReasonClassifier, evaluate_return
+from .jev_classifier import JevReasonClassifier
+from .policy import ReasonClassifier, evaluate_return
 
 
 class ReturnProcessingAgent:
@@ -13,7 +14,7 @@ class ReturnProcessingAgent:
     ) -> None:
         self._orders = {order.order_id: order for order in orders}
         self._policy = policy
-        self._reason_classifier = reason_classifier or KeywordReasonClassifier()
+        self._reason_classifier = reason_classifier or JevReasonClassifier()
 
     def process(self, request: ReturnRequest) -> ReturnDecision:
         return evaluate_return(

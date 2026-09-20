@@ -5,6 +5,7 @@ import pytest
 from jev.agent import ReturnProcessingAgent
 from jev.fixtures import DEFAULT_ORDERS, DEFAULT_POLICY
 from jev.models import IneligibilityCode, Resolution, ReturnRequest
+from jev.policy import KeywordReasonClassifier
 
 
 def request(**overrides: object) -> ReturnRequest:
@@ -21,7 +22,11 @@ def request(**overrides: object) -> ReturnRequest:
 
 @pytest.fixture
 def agent() -> ReturnProcessingAgent:
-    return ReturnProcessingAgent(DEFAULT_ORDERS, DEFAULT_POLICY)
+    return ReturnProcessingAgent(
+        DEFAULT_ORDERS,
+        DEFAULT_POLICY,
+        reason_classifier=KeywordReasonClassifier(),
+    )
 
 
 def test_approves_refund_and_classifies_reason(agent: ReturnProcessingAgent) -> None:
