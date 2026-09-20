@@ -7,6 +7,7 @@ from .models import (
     ReturnDecision,
     ReturnRequest,
     Resolution,
+    SemanticJudgments,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "ReturnDecision",
     "ReturnProcessingAgent",
     "ReturnRequest",
+    "SemanticJudgments",
 ]

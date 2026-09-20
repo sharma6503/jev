@@ -23,4 +23,7 @@ make run
 Use `.env.example` as a template and export `TYPESAFE_API_KEY` in your shell
 before running the CLI or constructing `ReturnProcessingAgent`. The SDK uses
 the `jev-latest` model by default; set `TYPESAFE_DEFAULT_MODEL` to override it.
+Each semantic evaluation uses a TypeSafe Choice for reason category, a Noul
+for policy compliance, and a Score for customer sentiment. Hard order and
+return-window rules remain deterministic.
 For offline tests, explicitly inject `KeywordReasonClassifier()`.
