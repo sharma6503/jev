@@ -24,3 +24,7 @@ def main() -> None:
     )
     decision = ReturnProcessingAgent(DEFAULT_ORDERS, DEFAULT_POLICY).process(request)
     print(decision.message)
+
+
+if __name__ == "__main__":
+    main()
