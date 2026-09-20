@@ -1,8 +1,8 @@
 # JEV
 
 JEV is a typed e-commerce return-processing workflow. Deterministic Python
-rules enforce return policy, while the optional Jev/TypeSafe adapter can
-classify free-form customer return reasons.
+rules enforce return policy, while the Jev/TypeSafe SDK classifies free-form
+customer return reasons.
 
 ## Run
 
@@ -15,11 +15,12 @@ jev-return ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 
 The same workflow is available through the Makefile:
 
 ```bash
-make install
+make setup
 make check
 make run
 ```
 
-Install the optional TypeSafe integration with `pip install -e ".[jev]"`, then
-inject `JevReasonClassifier()` into `ReturnProcessingAgent` when processing
-free-form reasons. The default keyword classifier requires no API key.
+Use `.env.example` as a template and export `TYPESAFE_API_KEY` in your shell
+before running the CLI or constructing `ReturnProcessingAgent`. The SDK uses
+the `jev-latest` model by default; set `TYPESAFE_DEFAULT_MODEL` to override it.
+For offline tests, explicitly inject `KeywordReasonClassifier()`.

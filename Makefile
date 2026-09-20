@@ -1,4 +1,7 @@
-.PHONY: install test check run clean
+.PHONY: setup install test check run clean
+
+setup:
+	pip install -e ".[test]"
 
 install:
 	pip install -e ".[test]"
