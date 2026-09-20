@@ -7,9 +7,9 @@ customer return reasons.
 ## Run
 
 ```bash
-pip install -e ".[test]"
-pytest
-jev-return ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 2026-09-20
+uv sync --extra test
+uv run pytest
+uv run jev-return ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 2026-09-20
 ```
 
 The same workflow is available through the Makefile:
@@ -19,6 +19,10 @@ make setup
 make check
 make run
 ```
+
+`uv` is the primary environment and package manager. If `uv` is unavailable,
+the equivalent fallback is `pip install -e ".[test]"`, followed by the same
+commands through the installed Python environment.
 
 Use `.env.example` as a template and export `TYPESAFE_API_KEY` in your shell
 before running the CLI or constructing `ReturnProcessingAgent`. The SDK uses

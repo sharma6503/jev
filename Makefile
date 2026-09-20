@@ -1,20 +1,20 @@
 .PHONY: setup install test check run clean
 
 setup:
-	pip install -e ".[test]"
+	uv sync --extra test
 
 install:
-	pip install -e ".[test]"
+	uv sync --extra test
 
 test:
-	python -m pytest -q
+	uv run pytest -q
 
 check:
-	python -m compileall -q src tests
-	python -m pytest -q
+	uv run python -m compileall -q src tests
+	uv run pytest -q
 
 run:
-	python -m jev.cli ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 2026-09-20
+	uv run python -m jev.cli ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 2026-09-20
 
 clean:
-	python -c "from pathlib import Path; [p.unlink() for p in Path('.').rglob('*.pyc')]; [p.rmdir() for p in Path('.').rglob('__pycache__') if p.exists()]"
+	uv run python -c "from pathlib import Path; [p.unlink() for p in Path('.').rglob('*.pyc')]; [p.rmdir() for p in Path('.').rglob('__pycache__') if p.exists()]"
