@@ -71,6 +71,15 @@ class ReturnPolicy:
 
 
 @dataclass(frozen=True)
+class SemanticJudgments:
+    reason: DecisionReason
+    reason_confidence: float | None
+    policy_compliance_probability: float | None
+    sentiment_score: float | None
+    sentiment_confidence: float | None
+
+
+@dataclass(frozen=True)
 class ReturnDecision:
     eligible: bool
     resolution: Resolution
@@ -79,3 +88,6 @@ class ReturnDecision:
     order_id: str
     item_id: str
     confidence: float | None = None
+    policy_compliance_probability: float | None = None
+    sentiment_score: float | None = None
+    sentiment_confidence: float | None = None

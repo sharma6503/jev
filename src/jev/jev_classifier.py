@@ -1,4 +1,4 @@
-from .models import DecisionReason
+from .models import DecisionReason, SemanticJudgments
 
 
 class JevReasonClassifier:
@@ -15,8 +15,8 @@ class JevReasonClassifier:
             client = TypeSafeClient()
         self._client = client
 
-    def classify(self, reason: str) -> tuple[DecisionReason, float | None]:
-        from typesafe_sdk import Choice
+    def classify(self, reason: str) -> SemanticJudgments:
+        from typesafe_sdk import Choice, Noul, Score
 
         response = self._client.system_one(
             state=reason,
@@ -31,8 +31,27 @@ class JevReasonClassifier:
                         "changed_mind": "The customer no longer wants the item.",
                         "other": "None of the other categories apply.",
                     },
-                )
+                ),
+                "policy_compliant": Noul(
+                    instructions="Would this return request normally comply with the stated return policy?",
+                ),
+                "sentiment": Score(
+                    instructions="How emotionally intense is the customer's return message?",
+                    criteria=[
+                        "Calm and factual",
+                        "Frustrated but civil",
+                        "Very angry or threatening to leave",
+                    ],
+                ),
             },
         )
-        answer = response.answers["reason"]
-        return DecisionReason(answer.choice), answer.confidence
+        reason_answer = response.answers["reason"]
+        policy_answer = response.answers["policy_compliant"]
+        sentiment_answer = response.answers["sentiment"]
+        return SemanticJudgments(
+            reason=DecisionReason(reason_answer.choice),
+            reason_confidence=reason_answer.confidence,
+            policy_compliance_probability=policy_answer.noul,
+            sentiment_score=sentiment_answer.score,
+            sentiment_confidence=sentiment_answer.confidence,
+        )

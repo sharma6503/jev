@@ -35,6 +35,9 @@ def test_approves_refund_and_classifies_reason(agent: ReturnProcessingAgent) -> 
     assert decision.resolution == Resolution.REFUND
     assert decision.reason_code.value == "damaged"
     assert "refund" in decision.message
+    assert decision.policy_compliance_probability == 1.0
+    assert decision.sentiment_score == 1.0
+    assert decision.sentiment_confidence == 1.0
 
 
 def test_approves_exchange(agent: ReturnProcessingAgent) -> None:
@@ -79,17 +82,31 @@ def test_jev_classifier_reads_quickstart_response_shape() -> None:
         choice = "damaged"
         confidence = 0.9
 
+    class NoulAnswer:
+        noul = 0.8
+
+    class ScoreAnswer:
+        score = 1.25
+        confidence = 0.7
+
     class FakeClient:
         def system_one(self, *, state: str, questions: dict[str, object]) -> object:
             assert state == "The item arrived damaged"
-            assert "reason" in questions
+            assert set(questions) == {"reason", "policy_compliant", "sentiment"}
 
             class Response:
-                answers = {"reason": Answer()}
+                answers = {
+                    "reason": Answer(),
+                    "policy_compliant": NoulAnswer(),
+                    "sentiment": ScoreAnswer(),
+                }
 
             return Response()
 
     classifier = JevReasonClassifier(client=FakeClient())
-    reason, confidence = classifier.classify("The item arrived damaged")
-    assert reason.value == "damaged"
-    assert confidence == 0.9
+    judgments = classifier.classify("The item arrived damaged")
+    assert judgments.reason.value == "damaged"
+    assert judgments.reason_confidence == 0.9
+    assert judgments.policy_compliance_probability == 0.8
+    assert judgments.sentiment_score == 1.25
+    assert judgments.sentiment_confidence == 0.7

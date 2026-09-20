@@ -10,11 +10,12 @@ from .models import (
     ReturnItem,
     ReturnPolicy,
     ReturnRequest,
+    SemanticJudgments,
 )
 
 
 class ReasonClassifier(Protocol):
-    def classify(self, reason: str) -> tuple[DecisionReason, float | None]:
+    def classify(self, reason: str) -> SemanticJudgments:
         ...
 
 
@@ -26,12 +27,24 @@ class KeywordReasonClassifier:
         DecisionReason.CHANGED_MIND: ("changed my mind", "do not want", "don't want"),
     }
 
-    def classify(self, reason: str) -> tuple[DecisionReason, float | None]:
+    def classify(self, reason: str) -> SemanticJudgments:
         normalized = reason.casefold()
         for decision_reason, keywords in self._KEYWORDS.items():
             if any(keyword in normalized for keyword in keywords):
-                return decision_reason, 1.0
-        return DecisionReason.OTHER, 0.5
+                return SemanticJudgments(
+                    reason=decision_reason,
+                    reason_confidence=1.0,
+                    policy_compliance_probability=1.0,
+                    sentiment_score=1.0,
+                    sentiment_confidence=1.0,
+                )
+        return SemanticJudgments(
+            reason=DecisionReason.OTHER,
+            reason_confidence=0.5,
+            policy_compliance_probability=0.5,
+            sentiment_score=0.0,
+            sentiment_confidence=0.5,
+        )
 
 
 def evaluate_return(
@@ -68,17 +81,20 @@ def evaluate_return(
             "Please request either a refund or an exchange.",
         )
 
-    reason, confidence = reason_classifier.classify(request.reason)
+    judgments = reason_classifier.classify(request.reason)
     resolution = request.requested_resolution
     action = "refund" if resolution == Resolution.REFUND else "exchange"
     return ReturnDecision(
         eligible=True,
         resolution=resolution,
-        reason_code=reason,
+        reason_code=judgments.reason,
         message=f"Your return is approved. We will process your {action} for {item.name}.",
         order_id=request.order_id,
         item_id=request.item_id,
-        confidence=confidence,
+        confidence=judgments.reason_confidence,
+        policy_compliance_probability=judgments.policy_compliance_probability,
+        sentiment_score=judgments.sentiment_score,
+        sentiment_confidence=judgments.sentiment_confidence,
     )
 
 
