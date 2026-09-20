@@ -19,8 +19,8 @@ class JevReasonClassifier:
         from typesafe_sdk import Choice
 
         response = self._client.system_one(
-            {"return_reason": reason},
-            {
+            state=reason,
+            questions={
                 "reason": Choice(
                     instructions="Classify the customer's return reason.",
                     criteria={
@@ -34,5 +34,5 @@ class JevReasonClassifier:
                 )
             },
         )
-        answer = response.choices["reason"]
+        answer = response.answers["reason"]
         return DecisionReason(answer.choice), answer.confidence

@@ -15,11 +15,12 @@ jev-return ord-1001 sku-shirt refund "The shirt arrived damaged" --requested-on 
 The same workflow is available through the Makefile:
 
 ```bash
-make install
+make setup
 make check
 make run
 ```
 
-Set `TYPESAFE_API_KEY` before running the CLI or constructing
-`ReturnProcessingAgent`; the agent uses `JevReasonClassifier()` by default.
+Use `.env.example` as a template and export `TYPESAFE_API_KEY` in your shell
+before running the CLI or constructing `ReturnProcessingAgent`. The SDK uses
+the `jev-latest` model by default; set `TYPESAFE_DEFAULT_MODEL` to override it.
 For offline tests, explicitly inject `KeywordReasonClassifier()`.

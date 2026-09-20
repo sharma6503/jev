@@ -70,3 +70,26 @@ def test_rejects_unsupported_resolution(agent: ReturnProcessingAgent) -> None:
 def test_validates_required_fields() -> None:
     with pytest.raises(ValueError, match="reason is required"):
         request(reason=" ")
+
+
+def test_jev_classifier_reads_quickstart_response_shape() -> None:
+    from jev.jev_classifier import JevReasonClassifier
+
+    class Answer:
+        choice = "damaged"
+        confidence = 0.9
+
+    class FakeClient:
+        def system_one(self, *, state: str, questions: dict[str, object]) -> object:
+            assert state == "The item arrived damaged"
+            assert "reason" in questions
+
+            class Response:
+                answers = {"reason": Answer()}
+
+            return Response()
+
+    classifier = JevReasonClassifier(client=FakeClient())
+    reason, confidence = classifier.classify("The item arrived damaged")
+    assert reason.value == "damaged"
+    assert confidence == 0.9
